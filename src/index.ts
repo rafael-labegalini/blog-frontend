@@ -21,24 +21,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Rota principal
 app.get('/', async (req: Request, res: Response) => {
-  const access_token = req.cookies.access_token;
+  res.render('index', { mensagem: 'Olá, mundo novo!' });
+});
 
-  const response = await axios.get("http://localhost:3000/users", {
+app.get("/profile", async (req: Request, res: Response) => {
+  const access_token = req.cookies.access_token;
+  const response = await axios.get('http://localhost:3000/profile', {
     headers: {
       Authorization: `Bearer ${access_token}`
     }
   });
-  console.log(response.data);
-
-  res.render('index', { mensagem: 'Olá, mundo novo!' });
-});
-
-app.get("/profile", async (req: Request, res: Response) {
-  // Aqui você deve chamar a rota /profile da sua API NestJS
-  // passando o token de autenticação para exibir os dados do
-  // usuário logado
+  const profile = response.data;
+  console.log(profile);
   
-  return res.render("profile");
+  return res.render("profile", {profile});
 });
 
 // Rota GET para exibir o formulário de login
